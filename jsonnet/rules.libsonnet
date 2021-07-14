@@ -549,6 +549,31 @@ function(params) {
       ],
     },
     {
+      name: 'openshift-etcd-telemetry.rules',
+      rules: [
+        {
+          expr: 'sum by (instance) (etcd_mvcc_db_total_size_in_bytes{job="etcd"})',
+          record: 'cluster:etcd_mvcc_db_total_size_in_bytes:sum',
+        },
+        {
+          expr: 'histogram_quantile(0.99, sum by (instance, le) (rate(etcd_disk_wal_fsync_duration_seconds_bucket{job="etcd"}[5m])))',
+          record: 'histogram_quantile_99:etcd_disk_wal_fsync_duration_seconds_bucket:sum',
+        },
+        {
+          expr: 'histogram_quantile(0.99, sum by (instance, le) (rate(etcd_network_peer_round_trip_time_seconds_bucket{job="etcd"}[5m])))',
+          record: 'histogram_quantile_99:etcd_network_peer_round_trip_time_seconds_bucket:sum',
+        },
+        {
+          expr: 'sum by (instance) (etcd_mvcc_db_total_size_in_use_in_bytes{job="etcd"})',
+          record: 'cluster:etcd_mvcc_db_total_size_in_use_in_bytes:sum',
+        },
+        {
+          expr: 'histogram_quantile(0.99, sum by (instance, le) (rate(etcd_disk_backend_commit_duration_seconds_bucket{job="etcd"}[5m])))',
+          record: 'histogram_quantile_99:etcd_disk_backend_commit_duration_seconds_bucket:sum',
+        },
+      ],
+    },
+    {
       name: 'openshift-sre.rules',
       rules: [
         {
